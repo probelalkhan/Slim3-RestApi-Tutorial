@@ -23,6 +23,42 @@
            return USER_EXISTS; 
         }
 
+        public function userLogin($email, $password){
+            if($this->isEmailExist($email)){
+                $hashed_password = $this->getUsersPasswordByEmail($email); 
+                if(password_verify($password, $hashed_password)){
+                    return USER_AUTHENTICATED;
+                }else{
+                    return USER_PASSWORD_DO_NOT_MATCH; 
+                }
+            }else{
+                return USER_NOT_FOUND; 
+            }
+        }
+
+        private function getUsersPasswordByEmail($email){
+            $stmt = $this->con->prepare("SELECT password FROM users WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute(); 
+            $stmt->bind_result($password);
+            $stmt->fetch(); 
+            return $password; 
+        }
+
+        public function getUserByEmail($email){
+            $stmt = $this->con->prepare("SELECT id, email, name, school FROM users WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute(); 
+            $stmt->bind_result($id, $email, $name, $school);
+            $stmt->fetch(); 
+            $user = array(); 
+            $user['id'] = $id; 
+            $user['email']=$email; 
+            $user['password'] = $name; 
+            $user['school'] = $school; 
+            return $user; 
+        }
+
         private function isEmailExist($email){
             $stmt = $this->con->prepare("SELECT id FROM users WHERE email = ?");
             $stmt->bind_param("s", $email);
