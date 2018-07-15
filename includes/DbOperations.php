@@ -45,6 +45,22 @@
             return $password; 
         }
 
+        public function getAllUsers(){
+            $stmt = $this->con->prepare("SELECT id, email, name, school FROM users;");
+            $stmt->execute(); 
+            $stmt->bind_result($id, $email, $name, $school);
+            $users = array(); 
+            while($stmt->fetch()){ 
+                $user = array(); 
+                $user['id'] = $id; 
+                $user['email']=$email; 
+                $user['name'] = $name; 
+                $user['school'] = $school; 
+                array_push($users, $user);
+            }             
+            return $users; 
+        }
+
         public function getUserByEmail($email){
             $stmt = $this->con->prepare("SELECT id, email, name, school FROM users WHERE email = ?");
             $stmt->bind_param("s", $email);
@@ -54,7 +70,7 @@
             $user = array(); 
             $user['id'] = $id; 
             $user['email']=$email; 
-            $user['password'] = $name; 
+            $user['name'] = $name; 
             $user['school'] = $school; 
             return $user; 
         }

@@ -135,6 +135,25 @@ $app->post('/userlogin', function(Request $request, Response $response){
         ->withStatus(422);    
 });
 
+$app->get('/allusers', function(Request $request, Response $response){
+
+    $db = new DbOperations; 
+
+    $users = $db->getAllUsers();
+
+    $response_data = array();
+
+    $response_data['error'] = false; 
+    $response_data['users'] = $users; 
+
+    $response->write(json_encode($response_data));
+
+    return $response
+    ->withHeader('Content-type', 'application/json')
+    ->withStatus(200);  
+
+});
+
 function haveEmptyParameters($required_params, $response){
     $error = false; 
     $error_params = '';
