@@ -14,6 +14,13 @@ $app = new \Slim\App([
     ]
 ]);
 
+$app->add(new Tuupola\Middleware\HttpBasicAuthentication([
+    "secure"=>false,
+    "users" => [
+        "belalkhan" => "123456",
+    ]
+]));
+
 /* 
     endpoint: createuser
     parameters: email, password, name, school
@@ -159,7 +166,7 @@ $app->put('/updateuser/{id}', function(Request $request, Response $response, arr
 
     $id = $args['id'];
 
-    if(!haveEmptyParameters(array('email','name','school','id'), $request, $response)){
+    if(!haveEmptyParameters(array('email','name','school'), $request, $response)){
 
         $request_data = $request->getParsedBody(); 
         $email = $request_data['email'];
